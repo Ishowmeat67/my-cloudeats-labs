@@ -6,3 +6,6 @@ COPY css/  /usr/share/nginx/html/css/
 
 # Tell Docker this container listens on port 80
 EXPOSE 80
+
+
+
