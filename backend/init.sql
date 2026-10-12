@@ -52,3 +52,6 @@ CREATE TABLE IF NOT EXISTS orders (
   INDEX idx_user_id (user_id),
   INDEX idx_status  (status)
 );
+-- Laksa (added in Lab 6.1)
+INSERT INTO menu_items (name, category, price, description, badge)
+VALUES ('Laksa', 'Noodles', 9.50, 'Spicy coconut noodle soup with prawns and tofu puffs', NULL);
