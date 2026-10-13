@@ -6,8 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+
+const PORT = process.env.PORT || 3002;
+
 app.get('/health', (req, res) =>
-  res.json({ status: 'ok', service: 'menu-service', port: 3002 })
+  res.json({ status: 'ok', service: 'menu-service', port: PORT })
 );
 
 // ── MySQL connection — same settings as backend/db.js (Lab 3.1)
@@ -61,7 +64,7 @@ app.get('/api/menu/:id', async (req, res) => {
   }
 });
 
-const PORT = process.env.PORT || 3002;
+
 app.listen(PORT, () =>
   console.log(`[menu-service] Running on http://localhost:${PORT}`)
 );
