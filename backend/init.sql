@@ -8,8 +8,10 @@ CREATE TABLE IF NOT EXISTS menu_items (
   price       DECIMAL(10, 2) NOT NULL,
   description TEXT,
   badge       VARCHAR(50),
+  rating      DECIMAL(2,1) DEFAULT NULL, 
   created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   available   INT DEFAULT 1  -- 1 = available, 0 = unavailable
+  
 );
 
 
@@ -53,5 +55,5 @@ CREATE TABLE IF NOT EXISTS orders (
   INDEX idx_status  (status)
 );
 -- Laksa (added in Lab 6.1)
-INSERT INTO menu_items (name, category, price, description, badge)
-VALUES ('Laksa', 'Noodles', 9.50, 'Spicy coconut noodle soup with prawns and tofu puffs', NULL);
+INSERT INTO menu_items (name, category, price, description, badge, rating)
+VALUES ('Laksa', 'Noodles', 9.50, 'Spicy coconut noodle soup with prawns and tofu puffs', NULL, 4.5);
