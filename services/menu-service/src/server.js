@@ -75,7 +75,7 @@ function validateRating(rating) {
   if (!Number.isInteger(rating)) {
     return { valid: false, error: 'Rating must be a whole number' };
   }
-  if (rating < 1 || rating > 5) {
+  if (rating < 1 || rating > 10) {
     return { valid: false, error: 'Rating must be between 1 and 5' };
   }
   return { valid: true };
