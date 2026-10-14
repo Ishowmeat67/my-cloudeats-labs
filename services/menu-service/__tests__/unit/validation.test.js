@@ -87,4 +87,10 @@ describe('validateRating Function', () => {
     expect(validateRating(6).valid).toBe(false);
   });
 
+
+  test('should accept valid rating of 2', () => {
+  const result = validateRating(2);
+  expect(result.valid).toBe(true);
+  });
+
 });
