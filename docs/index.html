@@ -32,7 +32,7 @@
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       background-color: var(--bg-base);
-      background-image: 
+      background-image:
         radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
         radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
       color: var(--text-main);
@@ -48,7 +48,6 @@
       width: 100%;
     }
 
-    /* Header */
     header {
       margin-bottom: 2.5rem;
     }
@@ -94,7 +93,6 @@
       margin-bottom: 1.5rem;
     }
 
-    /* Tech Stack Badges */
     .badge-cloud {
       display: flex;
       flex-wrap: wrap;
@@ -120,7 +118,6 @@
       transform: translateY(-1px);
     }
 
-    /* Section Typography */
     h2 {
       font-size: 1.25rem;
       font-weight: 600;
@@ -131,7 +128,6 @@
       gap: 0.5rem;
     }
 
-    /* Architecture Grid */
     .service-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -180,4 +176,228 @@
       background: rgba(56, 189, 248, 0.1);
       padding: 0.15rem 0.45rem;
       border-radius: 4px;
-      border: 1px solid rgba(56, 189, 2
+      border: 1px solid rgba(56, 189, 248, 0.2);
+    }
+
+    .service-card p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+
+    .service-card ul {
+      list-style: none;
+      margin-top: 0.8rem;
+      display: grid;
+      gap: 0.35rem;
+    }
+
+    .service-card li {
+      font-size: 0.72rem;
+      color: #dbeafe;
+      opacity: 0.9;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+
+    .service-card li::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.7);
+    }
+
+    .feature-list {
+      display: grid;
+      gap: 1rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .feature-item {
+      display: flex;
+      gap: 0.9rem;
+      align-items: flex-start;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1rem 1.1rem;
+    }
+
+    .feature-icon {
+      flex: 0 0 36px;
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      color: var(--accent-primary);
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .feature-item h3 {
+      font-size: 0.96rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .feature-item p {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+    }
+
+    .deployment {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.1rem 1.15rem;
+      margin-bottom: 2rem;
+    }
+
+    .deployment code {
+      display: block;
+      margin-top: 0.8rem;
+      padding: 0.9rem 1rem;
+      border-radius: 10px;
+      background: var(--code-bg);
+      color: #d7f9ff;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+    }
+
+    .footer-note {
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      text-align: center;
+      padding-top: 0.5rem;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 2rem 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .project-tag {
+        font-size: 0.68rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="project-tag"><span class="pulse-dot"></span> Cloud-Native Platform</div>
+      <h1>CloudEats</h1>
+      <p class="lead">
+        A modern microservices ecosystem for food delivery, built for resilience, scale, and shipping velocity.
+      </p>
+      <div class="badge-cloud" aria-label="Technology stack badges">
+        <span class="badge">Kubernetes</span>
+        <span class="badge">Docker</span>
+        <span class="badge">Spring Boot</span>
+        <span class="badge">React</span>
+        <span class="badge">Redis</span>
+        <span class="badge">PostgreSQL</span>
+        <span class="badge">Observability</span>
+      </div>
+    </header>
+
+    <section aria-labelledby="services-title">
+      <h2 id="services-title">Platform Architecture</h2>
+      <div class="service-grid">
+        <article class="service-card">
+          <div class="service-header">
+            <div class="service-name">Gateway</div>
+            <span class="port-pill">8080</span>
+          </div>
+          <p>Single API entry point that routes requests, enforces policies, and centralizes traffic management.</p>
+          <ul>
+            <li>JWT auth</li>
+            <li>Rate limiting</li>
+            <li>Request routing</li>
+          </ul>
+        </article>
+
+        <article class="service-card">
+          <div class="service-header">
+            <div class="service-name">Order Service</div>
+            <span class="port-pill">8081</span>
+          </div>
+          <p>Handles order lifecycle, transactional workflows, and status transitions for the customer journey.</p>
+          <ul>
+            <li>State machine</li>
+            <li>Async events</li>
+            <li>Inventory checks</li>
+          </ul>
+        </article>
+
+        <article class="service-card">
+          <div class="service-header">
+            <div class="service-name">Delivery Service</div>
+            <span class="port-pill">8082</span>
+          </div>
+          <p>Coordinates riders, mission ETA updates, and dispatch orchestration across the fulfillment flow.</p>
+          <ul>
+            <li>Dispatch engine</li>
+            <li>ETA tracking</li>
+            <li>Live updates</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="capabilities-title">
+      <h2 id="capabilities-title">Why this platform matters</h2>
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">01</div>
+          <div>
+            <h3>Independent service evolution</h3>
+            <p>Each domain owns its data, contract, and deployment path, enabling safer release cycles and faster experimentation.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">02</div>
+          <div>
+            <h3>Operational resilience</h3>
+            <p>Retries, circuit breakers, and distributed tracing help isolate failures before they impact the whole customer experience.</p>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">03</div>
+          <div>
+            <h3>Developer experience</h3>
+            <p>Standardized APIs, containerized workloads, and measurable telemetry reduce friction from local development to production rollout.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="deployment-title">
+      <h2 id="deployment-title">Deployment Pattern</h2>
+      <div class="deployment">
+        <p>CloudEats is designed to run as a containerized, cloud-native platform with stateless app services and persistent backing stores.</p>
+        <code>docker compose up
+kubectl apply -f k8s/
+helm upgrade --install cloudeats ./helm/cloudeats
+</code>
+      </div>
+    </section>
+
+    <div class="footer-note">CloudEats • cloud-native architecture for modern delivery experiences</div>
+  </div>
+</body>
+</html>
