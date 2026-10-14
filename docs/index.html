@@ -4,33 +4,180 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CloudEats — Food Ordering Platform</title>
+  <title>CloudEats — Cloud-Native Microservices Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    body { font-family: system-ui, sans-serif; max-width: 700px;
-           margin: 0 auto; padding: 2rem 1rem; background: #07090f; color: #e8edf5; }
-    h1 { color: #ffb740; } h2 { color: #00e5a0; border-bottom: 1px solid #2a3d5a; padding-bottom:.4rem; }
-    code { background: #141b27; padding: .1rem .4rem; border-radius: 4px; color: #00e5a0; }
-    .badge { display:inline-block; background:#1a2235; border:1px solid #2a3d5a;
-             border-radius:4px; padding:.2rem .6rem; font-size:.8rem; margin:.2rem; }
-  </style>
-</head>
-<body>
-  <h1>🍔 CloudEats</h1>
-  <p>A microservices-based food ordering platform built with Node.js, Docker, MySQL, and Redis.</p>
-  <span class="badge">Node.js</span> <span class="badge">Docker</span>
-  <span class="badge">MySQL</span> <span class="badge">Redis</span>
-  <span class="badge">GitHub Actions</span>
-  <h2>Architecture</h2>
-  <ul>
-    <li><strong>User Service</strong> — Register and login, port 3001</li>
-    <li><strong>Menu Service</strong> — Menu browsing, port 3002</li>
-    <li><strong>Order Service</strong> — Redis cart + MongoDB orders, port 3003</li>
-  </ul>
-  <h2>Quick Start</h2>
-  <pre><code>git clone https://github.com/YOUR-USERNAME/cloudeats-app
-cd cloudeats-app
-# create a .env file (see Week 7), then:
-docker compose up -d</code></pre>
-  <p>Built during the Cloud Computing course — Week 6 Lab 6.1</p>
-</body>
-</html>
+    :root {
+      --bg-base: #090d16;
+      --card-bg: rgba(18, 26, 43, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover: rgba(30, 41, 67, 0.8);
+      --accent-primary: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      --accent-green: #10b981;
+      --accent-amber: #f59e0b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --code-bg: #05080f;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-base);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(56, 189, 248, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.05) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 3rem 1.25rem;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 760px;
+      width: 100%;
+    }
+
+    /* Header */
+    header {
+      margin-bottom: 2.5rem;
+    }
+
+    .project-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--accent-primary);
+      background: var(--accent-glow);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      margin-bottom: 1rem;
+    }
+
+    .pulse-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--accent-primary);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-primary);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lead {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Tech Stack Badges */
+    .badge-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: #cbd5e1;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+
+    .badge:hover {
+      border-color: rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      transform: translateY(-1px);
+    }
+
+    /* Section Typography */
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Architecture Grid */
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.85rem;
+      margin-bottom: 2.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .service-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .service-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.15rem;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .service-card:hover {
+      background: var(--card-hover);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .service-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.6rem;
+    }
+
+    .service-name {
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .port-pill {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--accent-primary);
+      background: rgba(56, 189, 248, 0.1);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      border: 1px solid rgba(56, 189, 2
