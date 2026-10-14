@@ -12,3 +12,4 @@ logs/
 Thumbs.db
 .vscode/
 .idea/
+coverage/
