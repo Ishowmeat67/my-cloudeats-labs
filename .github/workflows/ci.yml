@@ -37,8 +37,8 @@ jobs:
         run: npm ci          # clean install from package-lock.json
 
       # Step 4: Run the test suite
-      - name: Run tests
+      - name: Run tests with coverage threshold
         working-directory: ./services/menu-service
         env:
           NODE_ENV: test    # enables module.exports in server.js
-        run: npm test
+        run: npm run test:coverage
