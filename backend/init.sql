@@ -9,8 +9,8 @@ CREATE TABLE IF NOT EXISTS menu_items (
   description TEXT,
   badge       VARCHAR(50),
   rating      DECIMAL(2,1) DEFAULT NULL, 
-  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-  available   INT DEFAULT 1  -- 1 = available, 0 = unavailable
+  created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  available   INT DEFAULT 1  -- 1 = available 0 = unavailable
   
 );
 
