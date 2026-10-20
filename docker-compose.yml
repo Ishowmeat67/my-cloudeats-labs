@@ -18,7 +18,8 @@ services:
       retries: 15
       start_period: 20s
     networks: [cloudeats-network]
-
+    
+   
   mongo:
     image: mongo:7
     container_name: cloudeats-mongo
