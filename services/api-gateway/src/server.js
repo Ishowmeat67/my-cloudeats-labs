@@ -64,8 +64,8 @@ app.use((req, res) =>
 );
 
 const PORT = process.env.PORT || 8000;
-app.listen(PORT, () => {
-  console.log(`[api-gateway] Listening on :${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`[api-gateway] Listening on 0.0.0.0:${PORT}`);
   console.log(`  /api/auth    → ${SERVICES.user}`);
   console.log(`  /api/menu    → ${SERVICES.menu}`);
   console.log(`  /api/orders  → ${SERVICES.order}`);
