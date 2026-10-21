@@ -1,24 +1,39 @@
- HEAD
-# my-cloudeats-labs
-=======
-## Labs Completed
-- [x] Lab 1.1: Development Environment Setup
-- [x] Lab 2.1: Static Menu + First Docker Container ✅ NEW!
-- [ ] Lab 2.2: Multi-Container Applications
+# CloudEats Labs
 
-## How to Run — CloudEats Menu
+A Docker-based, multi-service food ordering application built as a learning project for cloud-native architecture, container orchestration, and microservices design.
 
-### With Docker (Recommended)
-```bash
-cd ~/cloudeats-app/frontend
-docker build -t cloudeats-menu:v1.0 .
-docker run -d -p 3000:80 --name menu cloudeats-menu:v1.0
-# Access: http://[VM-IP]:3000/html/index.html
-```
+<p align="center">
+  <img src="https://img.shields.io/badge/Stack-Docker%20%7C%20Node.js%20%7C%20Express-blue" alt="Tech Stack" />
+  <img src="https://img.shields.io/badge/DB-MySQL%20%7C%20MongoDB%20%7C%20Redis-orange" alt="Databases" />
+  <img src="https://img.shields.io/badge/Frontend-HTML%20%7C%20CSS%20%7C%20JavaScript-success" alt="Frontend" />
+</p>
 
-### Stop the Container
-```bash
-docker stop menu
-docker rm menu
-```
->>>>>>> ad2b75f (Lab 5.1 - Microservices split notes and screenshots)
+## Overview
+
+CloudEats Labs is a hands-on project focused on building a food-ordering platform using a modular, containerized architecture. The application is split into a frontend, backend data services, and individual microservices with a central API gateway.
+
+This repository is designed to demonstrate:
+
+- Containerized application deployment with Docker
+- Microservice communication patterns
+- Database separation for different business domains
+- API gateway routing
+- Static frontend hosting via Dockerized web assets
+
+## Architecture
+
+```text
+Client
+  |
+  v
+Frontend (HTML/CSS/JS)
+  |
+  v
+API Gateway
+  |---------------------> User Service
+  |---------------------> Menu Service
+  |---------------------> Order Service
+  |
+  +--> MySQL (users + menu data)
+  +--> MongoDB (orders)
+  +--> Redis (caching / queue-ready layer)
