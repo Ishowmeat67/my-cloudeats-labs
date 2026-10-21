@@ -126,11 +126,5 @@ License
 This project is intended for educational and lab use.
 
 Built for learning, containerization, and modern application design.
-
 Code
 
-If you want, I can also make it:
-- more professional and enterprise-style
-- more fun and colorful
-- more concise for GitHub
-- tailored specifically to your lab milestones and screenshots
