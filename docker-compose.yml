@@ -11,6 +11,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./backend/roles.sql:/docker-entrypoint-initdb.d/roles.sql:ro   # ← NEW
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
       interval: 5s
@@ -56,9 +57,14 @@ services:
       DB_USER: ${MYSQL_USER:-cloudeats_user}
       DB_PASSWORD: ${MYSQL_PASSWORD}
       DB_NAME: ${MYSQL_DATABASE:-cloudeats_db}
+      LOG_LEVEL: ${LOG_LEVEL:-http}
+      JWT_SECRET:     ${JWT_SECRET:?Set JWT_SECRET in .env}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
     depends_on:
       db: { condition: service_healthy }
     restart: unless-stopped
+    volumes:
+      - user_logs:/app/logs
     networks: [cloudeats-network]
 
   menu-service:
@@ -100,6 +106,7 @@ services:
       USER_SERVICE_URL: http://user-service:3001
       MENU_SERVICE_URL: http://menu-service:3002
       ORDER_SERVICE_URL: http://order-service:3003
+      JWT_SECRET:     ${JWT_SECRET:?Set JWT_SECRET in .env}
     depends_on:
       - user-service
       - menu-service
@@ -111,6 +118,7 @@ volumes:
   mysql_data:
   mongo_data:
   redis_data:
+  user_logs:
 
 networks:
   cloudeats-network:

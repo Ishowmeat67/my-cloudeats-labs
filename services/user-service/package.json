@@ -5,13 +5,15 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "dev":   "nodemon src/server.js"
+    "dev": "nodemon src/server.js"
   },
   "dependencies": {
-    "bcrypt":        "^5.1.0",
-    "cors":          "^2.8.5",
-    "express":       "^4.18.2",
-    "jsonwebtoken":  "^9.0.0",
-    "mysql2":        "^3.6.0"
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.3",
+    "morgan": "^1.12.1",
+    "mysql2": "^3.6.0",
+    "winston": "^3.19.0"
   }
 }
