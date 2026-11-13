@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CloudEats Dashboard</title>
+<style>
+  body { font-family: system-ui, sans-serif; background:#0f172a; color:#e2e8f0; margin:0; padding:1.5rem; }
+  h1 { margin-top:0; }
+  .cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1rem; margin:1rem 0; }
+  .card { background:#1e293b; border-radius:8px; padding:1rem; }
+  .card .n { font-size:1.8rem; font-weight:700; }
+  .card .l { color:#94a3b8; font-size:.85rem; }
+  .bad { color:#f87171; } .good { color:#4ade80; }
+  table { width:100%; border-collapse:collapse; background:#1e293b; border-radius:8px; }
+  td, th { padding:.5rem .75rem; text-align:left; border-bottom:1px solid #334155; }
+  .bar { background:#38bdf8; height:10px; border-radius:5px; }
+  form { display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:1rem; }
+  input, button { padding:.5rem; border-radius:6px; border:1px solid #475569; background:#1e293b; color:inherit; }
+  button { background:#38bdf8; color:#0f172a; border:0; font-weight:600; cursor:pointer; }
+  #msg { color:#fbbf24; }
+</style>
+</head>
+<body>
+<h1>📊 CloudEats Dashboard</h1>
+
+<form id="login">
+  <input id="email" type="email" placeholder="admin email" value="admin@cloudeats.com">
+  <input id="password" type="password" placeholder="password">
+  <button>Log in as admin</button>
+  <span id="msg"></span>
+</form>
+
+<div id="board" hidden>
+  <div class="cards">
+    <div class="card"><div class="n" id="total">–</div><div class="l">Total requests</div></div>
+    <div class="card"><div class="n" id="rate">–</div><div class="l">Success rate (non-5xx)</div></div>
+    <div class="card"><div class="n" id="active">–</div><div class="l">Active requests</div></div>
+    <div class="card"><div class="n" id="p95">–</div><div class="l">p95 latency (est.)</div></div>
+    <div class="card"><div class="n" id="logins">–</div><div class="l">Logins ok / failed</div></div>
+  </div>
+  <h2>Requests by route</h2>
+  <table><thead><tr><th>Route</th><th>Requests</th><th>5xx</th><th></th></tr></thead><tbody id="routes"></tbody></table>
+  <p style="color:#94a3b8">Refreshes every 5 seconds.</p>
+</div>
+
+<script>
+let token = null, timer = null;
+
+document.getElementById('login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const msg = document.getElementById('msg');
+  msg.textContent = '';
+  const r = await fetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email.value, password: password.value })
+  });
+  const data = await r.json();
+  if (!r.ok) { msg.textContent = data.error || 'Login failed'; return; }
+  if (data.role !== 'admin') { msg.textContent = 'Not an admin account'; return; }
+  token = data.token;                      // kept in memory only
+  document.getElementById('board').hidden = false;
+  refresh();
+  clearInterval(timer);
+  timer = setInterval(refresh, 5000);
+});
+
+function metric(all, name) { return (all.find(m => m.name === name) || { values: [] }).values; }
+
+// Estimate p95 from histogram buckets: the first bucket whose cumulative count reaches 95%
+function p95(buckets) {
+  const byLe = {};
+  buckets.forEach(v => { byLe[v.labels.le] = (byLe[v.labels.le] || 0) + v.value; });
+  const les = Object.keys(byLe).filter(k => k !== '+Inf').map(Number).sort((a, b) => a - b);
+  const total = byLe['+Inf'] || 0;
+  if (!total) return null;
+  for (const le of les) if (byLe[le] >= total * 0.95) return le;
+  return Infinity;
+}
+
+async function refresh() {
+  const r = await fetch('/api/admin/metrics/json', { headers: { Authorization: 'Bearer ' + token } });
+  if (!r.ok) { msg.textContent = 'Session ended (' + r.status + '). Log in again.'; clearInterval(timer); return; }
+  const all = await r.json();
+
+  const reqs = metric(all, 'http_requests_total');
+  const total = reqs.reduce((a, v) => a + v.value, 0);
+  const errs = reqs.filter(v => String(v.labels.status).startsWith('5')).reduce((a, v) => a + v.value, 0);
+  document.getElementById('total').textContent = total;
+  const rate = total ? ((total - errs) / total * 100) : 100;
+  const rateEl = document.getElementById('rate');
+  rateEl.textContent = rate.toFixed(1) + '%';
+  rateEl.className = 'n ' + (rate >= 99 ? 'good' : 'bad');
+  document.getElementById('active').textContent = (metric(all, 'http_active_requests')[0] || { value: 0 }).value;
+
+  const lat = p95(metric(all, 'http_request_duration_seconds').filter(v => v.metricName === 'http_request_duration_seconds_bucket'));
+  document.getElementById('p95').textContent = lat === null ? '–' : (lat === Infinity ? '>2.5 s' : '≤ ' + Math.round(lat * 1000) + ' ms');
+
+  const lg = metric(all, 'cloudeats_logins_total');
+  const ok = lg.filter(v => v.labels.outcome === 'success').reduce((a, v) => a + v.value, 0);
+  const bad = lg.filter(v => v.labels.outcome === 'failure').reduce((a, v) => a + v.value, 0);
+  document.getElementById('logins').textContent = ok + ' / ' + bad;
+
+  const byRoute = {};
+  reqs.forEach(v => {
+    const o = byRoute[v.labels.route] || (byRoute[v.labels.route] = { n: 0, e: 0 });
+    o.n += v.value;
+    if (String(v.labels.status).startsWith('5')) o.e += v.value;
+  });
+  const max = Math.max(1, ...Object.values(byRoute).map(o => o.n));
+  document.getElementById('routes').innerHTML = Object.entries(byRoute)
+    .sort((a, b) => b[1].n - a[1].n)
+    .map(([route, o]) => '<tr><td>' + route + '</td><td>' + o.n + '</td><td class="' + (o.e ? 'bad' : '') + '">' + o.e +
+      '</td><td style="width:40%"><div class="bar" style="width:' + (o.n / max * 100) + '%"></div></td></tr>')
+    .join('');
+}
+</script>
+</body>
+</html>
