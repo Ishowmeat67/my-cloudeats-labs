@@ -113,6 +113,13 @@ services:
       - order-service
     restart: unless-stopped
     networks: [cloudeats-network]
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - cloudeats-network
+    
 
 volumes:
   mysql_data:

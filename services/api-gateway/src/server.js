@@ -9,8 +9,12 @@ if (!JWT_SECRET) {
   process.exit(1);
 }
 
+const path = require('path');
+const { register, metricsMiddleware } = require('./metrics');
+
 const app = express();
 app.use(cors());
+app.use(metricsMiddleware);   // counts every request that passes through
 // Do NOT add express.json() here. It would consume the request body and
 // the proxied POST/PUT requests would hang. The gateway only forwards bytes.
 
@@ -31,7 +35,7 @@ function proxy(target) {
   return createProxyMiddleware({
     target,
     changeOrigin: true,
-    xfwd: true,
+    xfwd: true,          // add X-Forwarded-For so services see the real client IP
     // app.use('/api/menu', …) strips '/api/menu' from req.url, but our services
     // define full paths (/api/menu/…). Put the original URL back.
     pathRewrite: (path, req) => req.originalUrl,
@@ -116,8 +120,24 @@ app.use('/api/orders/user/:userId', authenticateToken, requireSelf, proxy(SERVIC
 
 // Protected: valid token (the order-service reads the user from x-user-id)
 app.use('/api/orders',              authenticateToken, proxy(SERVICES.order));
+
+
+// ── Metrics: admin only, and they must come BEFORE the /api/admin proxy line ──
+app.get('/api/admin/metrics', authenticateToken, requireRole('admin'), async (req, res) => {
+  res.set('Content-Type', register.contentType);
+  res.send(await register.metrics());           // Prometheus text format
+});
+
+app.get('/api/admin/metrics/json', authenticateToken, requireRole('admin'), async (req, res) => {
+  res.json(await register.getMetricsAsJSON());  // same data, easy for the dashboard
+});
+
 // Admin only: valid token AND role = admin
 app.use('/api/admin', authenticateToken, requireRole('admin'), proxy(SERVICES.user));
+
+// ── Dashboard page (public HTML; the DATA it shows needs an admin token) ──
+app.use('/dashboard', express.static(path.join(__dirname, 'public')));
+
 
 // ── 404 for unknown routes ─────────────────────────────
 app.use((req, res) =>

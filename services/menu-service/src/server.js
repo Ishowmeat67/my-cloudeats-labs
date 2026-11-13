@@ -6,7 +6,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-
+const menuCache = {
+  data: null,
+  timestamp: 0
+};
+const CACHE_TTL_MS = 30 * 1000; //
 
 
 app.get('/health', (req, res) =>
@@ -26,8 +30,24 @@ const db = mysql.createPool({
 
 // ── GET /api/menu  (moved from backend/server.js, Lab 3.1)
 app.get('/api/menu', async (req, res) => {
+  const now = Date.now();
+
+  // 1. Check if cache exists and is less than 30 seconds old
+  if (menuCache.data && (now - menuCache.timestamp < CACHE_TTL_MS)) {
+    console.log('Serving menu from cache ⚡');
+    // Return standard format expected by frontend
+    return res.json({ success: true, data: menuCache.data }); 
+  }
+
+  // 2. If no valid cache, hit MySQL
   try {
+    console.log('Fetching menu from MySQL 🗄️');
     const [rows] = await db.query('SELECT * FROM menu_items ORDER BY category, name');
+    
+    // 3. Save the result to cache with the current timestamp
+    menuCache.data = rows;
+    menuCache.timestamp = now;
+
     res.json({ success: true, data: rows });
   } catch (err) {
     console.error('Menu fetch error:', err.message);

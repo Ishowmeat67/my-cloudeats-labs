@@ -5,6 +5,28 @@ const path    = require('path');
 // LOG_LEVEL=http shows error+warn+info+http. LOG_LEVEL=debug shows everything.
 const level = process.env.LOG_LEVEL || 'http';
 
+// 1. Always include Console for stdout (cloud-native logging)
+const transports = [
+  new winston.transports.Console()
+];
+
+// 2. Conditionally add File transports unless explicitly disabled (e.g. for AWS Week 10)
+if (process.env.LOG_TO_FILE !== 'false') {
+  transports.push(
+    new winston.transports.File({
+      filename: path.join(__dirname, '..', '..', 'logs', 'error.log'),
+      level: 'error',
+      maxsize: 5 * 1024 * 1024, // 5MB
+      maxFiles: 3
+    }),
+    new winston.transports.File({
+      filename: path.join(__dirname, '..', '..', 'logs', 'combined.log'),
+      maxsize: 5 * 1024 * 1024, // 5MB limit per file
+      maxFiles: 3               // Keep a maximum of 3 archived files
+    })
+  );
+}
+
 const logger = winston.createLogger({
   level,
   format: winston.format.combine(
@@ -13,18 +35,7 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   defaultMeta: { service: 'user-service' },
-  transports: [
-    // 1. stdout — what `docker compose logs` reads (the cloud-native way)
-    new winston.transports.Console(),
-    // 2. files in /app/logs — kept by a named volume (see docker-compose.yml)
-    new winston.transports.File({
-      filename: path.join(__dirname, '..', '..', 'logs', 'error.log'),
-      level: 'error'
-    }),
-    new winston.transports.File({
-      filename: path.join(__dirname, '..', '..', 'logs', 'combined.log')
-    })
-  ]
+  transports
 });
 
 module.exports = logger;
