@@ -22,21 +22,6 @@ This repository is designed to demonstrate:
 
 ## Architecture
 
-```text
-Client
-  |
-  v
-Frontend (HTML/CSS/JS)
-  |
-  v
-API Gateway
-  |---------------------> User Service
-  |---------------------> Menu Service
-  |---------------------> Order Service
-  |
-  +--> MySQL (users + menu data)
-  +--> MongoDB (orders)
-  +--> Redis (caching / queue-ready layer)
 Tech Stack
 Frontend: HTML, CSS, JavaScript
 Backend: Node.js, Express
@@ -68,10 +53,10 @@ my-cloudeats-labs/
 ├── docs/
 └── .github/
 Labs Completed
- Lab 1.1: Development Environment Setup
- Lab 2.1: Static Menu + First Docker Container
- Lab 2.2: Multi-Container Applications
- Lab 3.x: Additional service and integration milestones
+Lab 1.1: Development Environment Setup
+Lab 2.1: Static Menu + First Docker Container
+Lab 2.2: Multi-Container Applications
+Lab 3.x: Additional service and integration milestones
 Getting Started
 1. Clone the repository
 bash
@@ -120,10 +105,12 @@ docker compose logs -f
 # Restart a specific service
 docker compose restart api-gateway
 Notes
-This project is primarily a learning repository for understanding cloud-native application patterns. It is intentionally modular so each service can evolve independently while still being coordinated through Docker Compose and a centralized API entry point.
+This project is primarily a learning repository for understanding cloud-native application patterns. It is intentionally modular so each service can evolve independently while still being connected as part of the complete application.
 
 License
 This project is intended for educational and lab use.
+
+Built for learning, containerization, and modern application design.
 
 Built for learning, containerization, and modern application design.
 Code
